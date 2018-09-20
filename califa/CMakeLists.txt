@@ -41,6 +41,7 @@ R3BCalifaGeometry.cxx
 R3BCalifaCrystalCal2Hit.cxx  
 R3BCalifaHitPar.cxx  
 R3BCalifaContFact.cxx
+R3BCalifaPoint2CrystalCal.cxx
 unpack/R3BCalifaUnpack.cxx
 unpack/R3BCalifaMappedPar.cxx
 unpack/R3BCalifaMappedDataAnalysis.cxx

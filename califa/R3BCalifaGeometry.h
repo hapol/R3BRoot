@@ -4,6 +4,8 @@
  * @author Max Winkel <max.winkel@ph.tum.de>
  *
  * Modified: 16/12/2016, P.Cabanelas
+ *
+ * Modified: 01/07/2018, E.Galiana
  */
 
 #ifndef R3BCALIFAGEOMETRY_H
@@ -20,12 +22,12 @@ class TGeoNavigator;
 class R3BCalifaGeometry : public TObject
 {
 protected:
-    static R3BCalifaGeometry *inst;
-    R3BCalifaGeometry(int version);
+    //static R3BCalifaGeometry *inst;
+    //R3BCalifaGeometry(int version);
 
-    int fGeometryVersion;
+    //int fGeometryVersion;
 
-    TGeoNavigator *fNavigator;
+    //TGeoNavigator *fNavigator;
 
 public:
   /**
@@ -36,7 +38,7 @@ public:
    * @param azimuthal [out] Will be filled with azimuthal angle (radians) of crystal center
    * @param rho [out] Will be filled with distance (cm) of crystal center to target position (0,0,0)
    */
-  void GetAngles(Int_t iD, Double_t *polar, Double_t *azimuthal, Double_t* rho);
+  void GetAngles(Int_t iD, Double_t & polar, Double_t & azimuthal, Double_t & rho);
 
   /**
    * Gets volume path of crystal with given ID.
@@ -81,7 +83,7 @@ public:
    * @param version Geometry version to use. If in doupt, use 17.
    * @return Instance of R3BCalifaGeometry
    */
-  static R3BCalifaGeometry *Instance(int version);
+  //static R3BCalifaGeometry *Instance(int version);
 
   ClassDef(R3BCalifaGeometry, 4);
 };

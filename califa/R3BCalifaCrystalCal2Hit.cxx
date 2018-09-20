@@ -285,7 +285,7 @@ void R3BCalifaCrystalCal2Hit::Exec(Option_t* opt)
               usedCrystalHits[i] = 1; unusedCrystals--; crystalsInHit++;
               
               if(kSimulation)
-                  eInc += dynamic_cast<R3BCalifaCrystalCalDataSim*>(crystalHit[i])->GetEinc();
+									eInc += dynamic_cast<R3BCalifaCrystalCalDataSim*>(crystalHit[i])->GetEinc();//change the name
         }
       }
     }
@@ -1790,7 +1790,7 @@ void R3BCalifaCrystalCal2Hit::GetAngles(Int_t iD, Double_t* polar,
     }
   } else if (fGeometryVersion>=16) {
     // Use new R3BCalifaGeometry class to get geometrical information
-    R3BCalifaGeometry::Instance(fGeometryVersion)->GetAngles(iD, polar, azimuthal, rho);
+    //R3BCalifaGeometry::Instance(fGeometryVersion)->GetAngles(iD, polar, azimuthal, rho);
     return;
   } else LOG(ERROR) << "R3BCalifaCrystalCal2Hit: Geometry version not available in R3BCalifa::ProcessHits(). " << FairLogger::endl;
   
