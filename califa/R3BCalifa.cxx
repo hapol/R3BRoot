@@ -9,7 +9,7 @@
 // Changing classes name from Calo to Califa acording to name convention
 //
 // EliGaliana/H. Alvarez - 1/10/2018
-// - Removing old geometry versions 
+// - Removing old geometry versions, redoing current version 
 // - Adding the possibility to fill PointData for detailed simulation
 ////////////////////////////////////////////////////////////////////////////
 
@@ -53,7 +53,7 @@ R3BCalifa::R3BCalifa(const TString& geoFile, const TGeoTranslation& trans, const
 
 R3BCalifa::R3BCalifa(const TString& geoFile, const TGeoCombiTrans& combi)
   : R3BDetector("R3BCalifa", kCALIFA, geoFile, combi) {
-
+  
   ResetParameters();
   fCrystal = NULL;
   fCalifaCollection = new TClonesArray("R3BCalifaPoint");
@@ -63,7 +63,7 @@ R3BCalifa::R3BCalifa(const TString& geoFile, const TGeoCombiTrans& combi)
   flGeoPar = new TList();
   flGeoPar->SetName(GetName());
   fNonUniformity = 0.;
-  fGeometryVersion = 1;
+  fGeometryVersion = 1; //just for compatibility
   fRegisterMode = 0;
   LOG(INFO) << "R3BCalifa::R3BCalifa default fRegisterMode = " << fRegisterMode 
 	    << FairLogger::endl;
@@ -71,36 +71,6 @@ R3BCalifa::R3BCalifa(const TString& geoFile, const TGeoCombiTrans& combi)
 	    << FairLogger::endl;
   
   // fNf and fNs calculation (ongoing work)
-  //  tf_p_dNs = new TF1("tf_p_dNs","-[0]*[1]*exp(-[1]*(x-[3]))+[2]",0,1000);
-  //  tf_p_dNf = new TF1("tf_p_dNf","-[0]*[1]*exp(-[1]*(x-[3]))+[2]",0,1000);
-  //  tf_g_dNs = new TF1("tf_g_dNs","[2]",0,1000);
-  //  tf_g_dNf = new TF1("tf_g_dNf","[2]",0,1000);
-  //
-  //  tf_p_dNs->SetParameter(0,18.88 / 7.46);
-  //  tf_p_dNs->SetParameter(1,0.0868);
-  //  tf_p_dNs->SetParameter(2,4.228 / 7.46);
-  //  tf_p_dNs->SetParameter(3,0);
-  //
-  //  tf_p_dNf->SetParameter(0,-18.88 / 7.46);
-  //  tf_p_dNf->SetParameter(1,0.0868);
-  //  tf_p_dNf->SetParameter(2,3.232 / 7.46);
-  //  tf_p_dNf->SetParameter(3,0);
-  //
-  //  // tf_p_dNs->SetParameter(0,18.88);
-  //  // tf_p_dNs->SetParameter(1,0.0868);
-  //  // tf_p_dNs->SetParameter(2,4.228);
-  //  // tf_p_dNs->SetParameter(3,4.117);
-  //  // tf_p_dNs->SetParameter(4,4.259);
-  //
-  //  // tf_p_dNf->SetParameter(0,-32.66);
-  //  // tf_p_dNf->SetParameter(1,0.07729);
-  //  // tf_p_dNf->SetParameter(2,3.155);
-  //  // tf_p_dNf->SetParameter(3,0);
-  //  // tf_p_dNf->SetParameter(4,-3.947);
-  //
-  //  tf_g_dNs->SetParameter(2, tf_p_dNs->GetParameter(2));
-  //  tf_g_dNf->SetParameter(2, tf_p_dNf->GetParameter(2));
-  
   tf_dNf_dE = new TF1("tf_dNf_dE", "1./([0]+[1]*(x^[2])+[3]/(x^[4]))");
   tf_dNs_dE = new TF1("tf_dNs_dE", "1./([0]+[1]*(x^[2])+[3]/(x^[4]))");
   
@@ -122,11 +92,7 @@ R3BCalifa::~R3BCalifa() {
     fCalifaCrystalCalCollection->Delete();
     delete fCalifaCrystalCalCollection;
   }
-  
-  //  delete tf_p_dNs;
-  //  delete tf_p_dNf;
-  //  delete tf_g_dNs;
-  //  delete tf_g_dNf;
+
   delete tf_dNf_dE;
   delete tf_dNs_dE;
 }
@@ -152,11 +118,10 @@ Bool_t R3BCalifa::ProcessHits(FairVolume* vol) {
     // Try to get crystal information from hash table
     // TODO: Still a performance benefit to use hash table?
     
-    // Note: there are two crystals with the same NodeId,
-    // which cause an error in the map filling 
-    // check out this error in future geometry versions   
     gGeoManager->cd(gMC->CurrentVolPath());
     Int_t nodeId = gGeoManager->GetNodeId();
+
+    //std::cout << "nodeId: " << nodeId << " " <<gMC->CurrentVolName() << "   "<<gMC->CurrentVolPath()<< std::endl;
     
     std::map<Int_t, sCrystalInfo>::iterator it = fCrystalMap.find(nodeId);
     
@@ -440,33 +405,32 @@ Bool_t R3BCalifa::GetCrystalInfo(sCrystalInfo& info) {
   info.cpCry = cpCry;
   
   bool Print_Cryinfo=kTRUE;
-  if(Print_Cryinfo)
-    {
-      cout<<">>> CALIFA main class <<<"<<endl;
-      cout<<"-------   Crystal info   ------"<<endl;	
-      cout<<"-- from gMC"<<endl;
-      cout<<"Path= "<<gMC->CurrentVolPath()<<endl;	
-      cout<<"1.Current Volume "<<endl;
-      cout<<"volId1_Name= "<<gMC->CurrentVolOffName(0)<<endl; //or bufferName
-      cout<<"volId1= "<<volId1<<endl;	  
-      cout<<"cp1= "<<cp1<<endl;
-      
-      cout<<"2."<<endl;
-      cout <<"volIdCry_Name= "<<gMC->CurrentVolOffName(1)<<endl;
-      cout<<"volIdCry= "<<volIdCry<<endl;
-      cout<<"cpCry= "<<cpCry<<endl;
-      
-      cout<<"3."<<endl;
-      cout <<"volIdAlv_Name= "<<gMC->CurrentVolOffName(2)<<endl;	
-      cout<<"volIdAlv= "<<volIdAlv<<endl;
-      cout<<"cpAlv= "<<cpAlv<<endl;
-      
-      cout<<"4."<<endl;
-      cout << "volIdSupAlv_Name= "<<gMC->CurrentVolOffName(3)<<endl;
-      cout<<"volIdSupAlv= "<<volIdSupAlv<<endl;
-      cout<<"cpSupAlv= "<<cpSupAlv<<endl;
-      cout<<"----------"<<endl;
-    }	
+  if(Print_Cryinfo)  {
+    cout<<">>> CALIFA main class <<<"<<endl;
+    cout<<"-------   Crystal info   ------"<<endl;	
+    cout<<"-- from gMC"<<endl;
+    cout<<"Path= "<<gMC->CurrentVolPath()<<endl;	
+    cout<<"1.Current Volume "<<endl;
+    cout<<"volId1_Name= "<<gMC->CurrentVolOffName(0)<<endl; //or bufferName
+    cout<<"volId1= "<<volId1<<endl;	  
+    cout<<"cp1= "<<cp1<<endl;
+    
+    cout<<"2."<<endl;
+    cout <<"volIdCry_Name= "<<gMC->CurrentVolOffName(1)<<endl;
+    cout<<"volIdCry= "<<volIdCry<<endl;
+    cout<<"cpCry= "<<cpCry<<endl;
+    
+    cout<<"3."<<endl;
+    cout <<"volIdAlv_Name= "<<gMC->CurrentVolOffName(2)<<endl;	
+    cout<<"volIdAlv= "<<volIdAlv<<endl;
+    cout<<"cpAlv= "<<cpAlv<<endl;
+    
+    cout<<"4."<<endl;
+    cout << "volIdSupAlv_Name= "<<gMC->CurrentVolOffName(3)<<endl;
+    cout<<"volIdSupAlv= "<<volIdSupAlv<<endl;
+    cout<<"cpSupAlv= "<<cpSupAlv<<endl;
+    cout<<"----------"<<endl;
+  }	
   
   /*NOTE: 1. gMC->VolName(id) is virtual (not defined) so not use it
     2. Use CurrentVolOffName without convert it into a const char, because it not works
