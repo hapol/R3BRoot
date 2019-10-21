@@ -2,7 +2,6 @@
 #include "FairLogger.h"
 #include "FairRootManager.h"
 #include "FairVolume.h"
-#include "R3BCalifaCrystalCalData.h"
 #include "R3BCalifaGeometry.h"
 #include "R3BCalifaPoint.h"
 #include "R3BMCStack.h"
@@ -42,7 +41,6 @@ R3BCalifa::R3BCalifa(const TString& geoFile, const TGeoCombiTrans& combi)
 {
     ResetParameters();
     fCalifaCollection = new TClonesArray("R3BCalifaPoint");
-    fCalifaCrystalCalCollection = new TClonesArray("R3BCalifaCrystalCalData");
     fPosIndex = 0;
     flGeoPar = new TList();
     flGeoPar->SetName(GetName());
@@ -68,11 +66,6 @@ R3BCalifa::~R3BCalifa()
     {
         fCalifaCollection->Delete();
         delete fCalifaCollection;
-    }
-    if (fCalifaCrystalCalCollection)
-    {
-        fCalifaCrystalCalCollection->Delete();
-        delete fCalifaCrystalCalCollection;
     }
 
     delete tf_dNf_dE;
@@ -179,7 +172,7 @@ Bool_t R3BCalifa::ProcessHits(FairVolume* vol)
 
     fNSteps++;
 
-    // Set additional parameters at exit of active volume. Create R3BCalifaPoint or R3BCalifaCrystalCalData.
+    // Set additional parameters at exit of active volume. Create R3BCalifaPoint.
     if (gMC->IsTrackExiting() || gMC->IsTrackStop() || gMC->IsTrackDisappeared())
     {
         fTrackID = gMC->GetStack()->GetCurrentTrackNumber();
@@ -247,7 +240,6 @@ void R3BCalifa::EndOfEvent()
     Print();
 
     fCalifaCollection->Clear();
-    fCalifaCrystalCalCollection->Clear();
 
     ResetParameters();
 }
@@ -276,7 +268,6 @@ void R3BCalifa::Print(Option_t* option) const
 void R3BCalifa::Reset()
 {
     fCalifaCollection->Clear();
-    fCalifaCrystalCalCollection->Clear();
     ResetParameters();
 }
 

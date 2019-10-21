@@ -8,7 +8,6 @@
 
 class TClonesArray;
 class R3BCalifaPoint;
-class R3BCalifaCrystalCalData;
 class FairVolume;
 class TGeoRotation;
 class R3BCalifaGeometry;
@@ -122,7 +121,6 @@ class R3BCalifa : public R3BDetector
     TList* flGeoPar;                //!
 
     TClonesArray* fCalifaCollection;           //!  The point collection
-    TClonesArray* fCalifaCrystalCalCollection; //!  The crystal cal collection
 
     //! Defining functions for energy to light output calculation
     //    TF1 *tf_p_dNs;    //!
