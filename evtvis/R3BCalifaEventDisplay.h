@@ -95,10 +95,6 @@ class R3BCalifaEventDisplay : public FairTask
 
     TEveProjectionManager*   fProjManager1;
     TEveProjectionManager*   fProjManager2;
-	
-    // Flag for simulation
-    Bool_t kSimulation;
-
 
   private:
 

@@ -9,29 +9,14 @@
 class TClonesArray;
 class R3BCalifaPoint;
 class R3BCalifaCrystalCalData;
-class R3BCalifaCrystalCalDataSim;
 class FairVolume;
 class TGeoRotation;
+class R3BCalifaGeometry;
 
 class R3BCalifa : public R3BDetector
 {
 
   public:
-    struct sCrystalInfo
-    {
-        Int_t crystalType;
-        Int_t crystalCopy;
-        Int_t crystalId;
-        Int_t fEndcapIdentifier;
-        Int_t fPhoswichIdentifier;
-
-        Int_t volIdAlv;
-        Int_t cpAlv;
-        Int_t cpCry;
-
-        Double_t density;
-    };
-
     /** Default constructor */
     R3BCalifa();
 
@@ -54,8 +39,8 @@ class R3BCalifa : public R3BDetector
     /** Virtual method ProcessHits
      **
      ** Defines the action to be taken when a step is inside the
-     ** active volume. Creates a R3BCalifaPoint and adds it
-     ** to the collection.
+     ** active volume. Creates a R3BCalifaPoint or a
+     ** R3BCalifaCrystalCalData and adds it to the collection.
      *@param vol  Pointer to the active volume
      **/
     virtual Bool_t ProcessHits(FairVolume* vol = 0);
@@ -109,29 +94,14 @@ class R3BCalifa : public R3BDetector
 
     /** Select the version of the CALIFA geometry
      **
-     *@param version Geometry version (see documentation /r3broot/cal/perlScripts/README)
+     *@param version Geometry version (final BARREL+iPhos: 2020)
      **/
     void SelectGeometryVersion(Int_t version);
-
-    /** Public method SetNonUniformity
-     **
-     ** Defines the fNonUniformity parameter in % deviation from the central value
-     *@param nonU  Double parameter setting the maximum non-uniformity allowed
-     **/
-    void SetNonUniformity(Double_t nonU);
 
     virtual void Initialize();
     virtual void SetSpecialPhysicsCuts() {}
 
-    //  void SaveGeoParams();
-
   private:
-    // Mapping of volume ID to crystal information
-    std::map<Int_t, sCrystalInfo> fCrystalMap;
-
-    // Current active crystal
-    sCrystalInfo* fCrystal;
-
     /** Track information to be stored until the track leaves the
     active volume. **/
     Int_t fTrackID;                 //!  track index
@@ -149,11 +119,10 @@ class R3BCalifa : public R3BDetector
     Int_t fPosIndex;                //!
     Int_t fNSteps;                  //!  Number of steps in the active volume
     Double32_t fEinc;               //!  Total incident energy
-    Bool_t kGeoSaved;               //!
     TList* flGeoPar;                //!
 
-    TClonesArray* fCaloCollection;           //!  The point collection
-    TClonesArray* fCaloCrystalHitCollection; //!  The crystal hit collection
+    TClonesArray* fCalifaCollection;           //!  The point collection
+    TClonesArray* fCalifaCrystalCalCollection; //!  The crystal cal collection
 
     //! Defining functions for energy to light output calculation
     //    TF1 *tf_p_dNs;    //!
@@ -164,19 +133,19 @@ class R3BCalifa : public R3BDetector
     TF1* tf_dNf_dE; //!
     TF1* tf_dNs_dE; //!
 
-    // Selecting the geometry of the CALIFA calorimeter
+    // Selecting the geometry of the CALIFA calorimeter (final BARREL+iPhos: 2020)
     Int_t fGeometryVersion;
-    // Adding some non-uniformity preliminary description
-    Double_t fNonUniformity;
 
-    /** Private method AddHit
+    Double_t fCsIDensity;
+
+    R3BCalifaGeometry* fCalifaGeo;
+
+    /** Private method AddPoint
      **
      ** Adds a CalifaPoint to the HitCollection
      **/
     R3BCalifaPoint* AddPoint(Int_t trackID,
                              Int_t detID,
-                             Int_t volid,
-                             Int_t copy,
                              Int_t ident,
                              TVector3 posIn,
                              TVector3 pos_out,
@@ -188,32 +157,16 @@ class R3BCalifa : public R3BDetector
                              Double_t Nf,
                              Double_t Ns);
 
-    /** Private method AddCrystalHit
+    /** Private method AddCrystalCal
      **
-     ** Adds a CalifaCrystalCalDataSim to the HitCollection
+     ** Adds a CalifaCrystalCalData to the HitCollection
      **/
-    R3BCalifaCrystalCalDataSim* AddCrystalHit(Int_t type,
-                                              Int_t copy,
-                                              Int_t ident,
-                                              Double_t energy,
-                                              Double_t Nf,
-                                              Double_t Ns,
-                                              Double_t tof,
-                                              Int_t steps,
-                                              Double_t einc,
-                                              Int_t trackid,
-                                              Int_t volid,
-                                              Int_t partrackid,
-                                              Int_t pdgid,
-                                              Int_t uniqueid);
-
-    /** Private method NUSmearing
-     **
-     ** Smears the energy according to some non-uniformity distribution
-     ** Very simple preliminary scheme where the NU is introduced as a flat random
-     ** distribution with limits fNonUniformity (%) of the energy value.
-     **/
-    Double_t NUSmearing(Double_t inputEnergy);
+    R3BCalifaCrystalCalData* AddCrystalHit(Int_t ident,
+                                           Double_t energy,
+                                           Double_t Nf,
+                                           Double_t Ns,
+                                           Double_t time,
+                                           Double_t tot_energy);
 
     /** Private method ResetParameters
      **
@@ -223,9 +176,7 @@ class R3BCalifa : public R3BDetector
 
     TGeoRotation* createMatrix(Double_t phi, Double_t theta, Double_t psi);
 
-    Bool_t GetCrystalInfo(sCrystalInfo& info);
-
-    ClassDef(R3BCalifa, 6);
+    ClassDef(R3BCalifa, 7);
 };
 
 inline void R3BCalifa::ResetParameters()

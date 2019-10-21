@@ -1,20 +1,9 @@
-// -----------------------------------------------------------------------------
-// -----                R3BCalifaCrystalCal2Hit source file                -----
-// -----                  Created 27/08/10  by H.Alvarez                   -----
-// -----                Last modification 19/12/16 by P.Cabanelas          -----
-// -----------------------------------------------------------------------------
-
-/**  R3BCalifaCrystalCal2Hit.h
- **/
-
-
 #ifndef R3BCALIFACRYSTALCAL2HIT_H
 #define R3BCALIFACRYSTALCAL2HIT_H
 
 #include "FairTask.h"
-#include "R3BCalifaHitData.h"
-#include "R3BCalifaHitDataSim.h"
 #include "R3BCalifaGeometry.h"
+#include "R3BCalifaHitData.h"
 //#include "R3BCalifaCrystalCal2HitPar.h"
 
 class TClonesArray;
@@ -23,7 +12,6 @@ class R3BCalifaCrystalCal2Hit : public FairTask
 {
 
   public:
-
     /** Default constructor **/
     R3BCalifaCrystalCal2Hit();
 
@@ -36,12 +24,6 @@ class R3BCalifaCrystalCal2Hit : public FairTask
     /** Virtual method Reset **/
     virtual void Reset();
 
-    /** Public method  GetAngles **/
-    void GetAngles(Int_t iD, Double_t* polar, Double_t* azimuthal);
-
-    /** Public method  GetAngles **/
-    void GetAngles(Int_t iD, Double_t* polar, Double_t* azimuthal, Double_t* rho);
-
     /** Public method SelectGeometryVersion
      **
      ** Defines the geometry
@@ -50,49 +32,12 @@ class R3BCalifaCrystalCal2Hit : public FairTask
      **/
     void SelectGeometryVersion(Int_t version);
 
-    /** Public method SetExperimentalResolution
-     **
-     ** Defines the experimental resolution of the crystals. The parameter sets the value
-     ** at 1 MeV, and it scales according to and 1/sqrt(E) law.
-     *@param crystalRes  Double parameter used to set the experimental resolution @ 1 MeV
-     **/
-    void SetExperimentalResolution(Double_t crystalRes);
-
-    /** Public method SetComponentResolution
-     **
-     ** Defines the experimental resolution of the CsI(Tl) components.
-     *@param componentRes  Double parameter used to set the experimental resolution in MeV
-     **/
-    void SetComponentResolution(Double_t componentRes);
-
-    /** Public method SetPhoswichResolution
-     **
-     ** Defines the experimental resolution of the LaBr and LaCl crystals.
-     *@param LaBr  Double parameter used to set the experimental resolution in % for LaBr
-     *@param Lacl  Double parameter used to set the experimental resolution in % for LaCl
-     **/
-    void SetPhoswichResolution(Double_t LaBr, Double_t LaCl);
-
-    /** Public method SetDetectionThreshold
-     **
-     ** Defines the minimum energy requested in a crystal to be considered in a calorimeter Hit
-     *@param thresholdEne  Double parameter used to set the threshold
-     **/
-    void SetDetectionThreshold(Double_t thresholdEne);
-
-    /** Public method SetDRThreshold
-     **
-     ** Defines the minimum energy requested in a crystal to be considered in a calorimeter Hit
-     *@param thresholdEne  Double parameter used to set the threshold
-     **/
-    void SetDRThreshold(Double_t DRthresholdEne);
-
     /** Public method SetAngularWindow
      **
      ** Sets the angular window open around the crystal with the largest energy
      ** to search for additional crystal hits and addback to the same cal hit
      **/
-    void SetAngularWindow(Double_t deltaPolar, Double_t deltaAzimuthal, Double_t DeltaAngleClust=0.);
+    void SetAngularWindow(Double_t deltaPolar, Double_t deltaAzimuthal, Double_t DeltaAngleClust = 0.);
 
     /** Public method SetClusteringAlgorithm
      **
@@ -105,8 +50,21 @@ class R3BCalifaCrystalCal2Hit : public FairTask
      //         energy of the two hit, need ParCluster1 NOT IMPLEMENTED YET!
      **
      **/
-    void SetClusteringAlgorithm(Int_t ClusteringAlgorithmSelector, Double_t ParCluster1) ;
+    void SetClusteringAlgorithm(Int_t ClusteringAlgorithmSelector, Double_t ParCluster1);
 
+    /** Public method SetCrystalThreshold
+     **
+     ** Defines the minimum energy requested in a crystal to be considered in a calorimeter Hit
+     *@param thresholdEne  Double parameter used to set the threshold
+     **/
+    void SetCrystalThreshold(Double_t thresholdEne);
+
+    /** Public method SetDRThreshold (for double reading)
+     **
+     ** Defines the minimum energy requested in a crystal to be considered in a calorimeter Hit
+     *@param thresholdEne  Double parameter used to set the threshold
+     **/
+    void SetDRThreshold(Double_t DRthresholdEne);
     /** Virtual method SetParContainers **/
     virtual void SetParContainers();
 
@@ -114,12 +72,9 @@ class R3BCalifaCrystalCal2Hit : public FairTask
     virtual void Finish();
 
     /** Accessor to select online mode **/
-    void SetOnline(Bool_t option){fOnline=option;} 
-  
+    void SetOnline(Bool_t option) { fOnline = option; }
 
   protected:
-
-
     /** Virtual method Init **/
     virtual InitStatus Init();
 
@@ -129,90 +84,37 @@ class R3BCalifaCrystalCal2Hit : public FairTask
     TClonesArray* fCrystalHitCA;
     TClonesArray* fCalifaHitCA;
 
-    //Don't store data for online
-    Bool_t fOnline;
-    // Selecting the geometry of the CALIFA calorimeter
-    Int_t fGeometryVersion;
-    // Minimum energy requested in a crystal to be considered in a calorimeter Hit
-    Double_t fThreshold;
-    // Threshold for selecting gamma or proton branch in double reading channels
-    Double_t fDRThreshold;
-    // Experimental resolution @ 1 MeV
-    Double_t fCrystalResolution;
-    // Experimental resolution for Nf and Ns
-    Double_t fComponentResolution;
-    // Experimental resolution for LaBr
-    Double_t fLaBrResolution;
-    // Experimental resolution for LaCl
-    Double_t fLaClResolution;
-    // Angular window (polar)
-    Double_t fDeltaPolar;
-    // Angular window (azimuthal)
-    Double_t fDeltaAzimuthal;
-    // Angular opening used for the clustering condition
-    Double_t fDeltaAngleClust;
-    // Clustering algorithm selector
-    Int_t fClusteringAlgorithmSelector;
-    // Clustering parameter 1
-    Double_t fParCluster1;
-    // Flag for simulation
-    Bool_t kSimulation;
+    Bool_t fOnline;                     // Selector for online data storage
+    Int_t fGeometryVersion;             // Selecting the geometry of the CALIFA calorimeter
+    Double_t fDeltaPolar;               // Angular window (polar angle)
+    Double_t fDeltaAzimuthal;           // Angular window (azimuthal angle)
+    Double_t fDeltaAngleClust;          // Angular opening used for the cluster condition
+    Int_t fClusteringAlgorithmSelector; // Clustering algorithm selector
+    Double_t fParCluster1;              // Clustering parameter 1
+    Double_t fThreshold;                // Minimum energy requested in a crystal to be included in a Cal
+    Double_t fDRThreshold;              // Threshold for selecting gamma or proton branch in double reading channels
 
     // Parameter class
-    //R3BCalifaCrystalCal2HitPar* fCalifaHitFinderPar;
+    // R3BCalifaCrystalCal2HitPar* fCalifaHitFinderPar;
 
-
-    R3BCalifaGeometry *fGeo;
+    R3BCalifaGeometry* fCalifaGeo;
 
   private:
-
     UInt_t nEvents;
 
-    /** Private method ExpResSmearing
-    **
-    ** Smears the energy according to some Experimental Resolution distribution
-     ** Very simple preliminary scheme where the Experimental Resolution
-     ** is introduced as a gaus random distribution with a width given by the
-     ** parameter fCrystalResolution(in % @ MeV). Scales according to 1/sqrt(E)
+    /** Private method AddHit
+     **
+     ** Adds a CalifaHit to the HitCollection
      **/
-    Double_t ExpResSmearing(Double_t inputEnergy);
+    R3BCalifaHitData* AddHit(UInt_t Nbcrystals,
+                             Double_t ene,
+                             Double_t Nf,
+                             Double_t Ns,
+                             Double_t pAngle,
+                             Double_t aAngle,
+                             ULong64_t time);
 
-
-     /** Private method CompSmearing
-    **
-    ** Smears the CsI(Tl) components Ns and Nf
-    **/
-    Double_t CompSmearing(Double_t inputComponent);
-
-    /** Private method CompSmearing
-    **
-    ** Smears the LaBr and LaCl
-    **/
-    Double_t PhoswichSmearing(Double_t inputEnergy, bool isLaBr);
-
-
-    /** Private method isPhoswich
-    **
-    ** Smears the CsI(Tl) components Ns and Nf
-    **/
-    bool isPhoswich(Int_t crystalid);
-
-   /** Private method AddHit
-    **
-    ** Adds a CalifaHit to the HitCollection
-    **/
-    R3BCalifaHitData* AddHit(UInt_t Nbcrystals,Double_t ene, Double_t Nf, Double_t Ns, Double_t pAngle,Double_t aAngle, ULong64_t time);
-
-    /** Private method AddHitSim
-    **
-    ** Adds a CalifaHitDataSim to the HitSimCollection
-    **/
-    R3BCalifaHitDataSim* AddHitSim(UInt_t Nbcrystals,Double_t ene, Double_t Nf, Double_t Ns,Double_t pAngle,Double_t aAngle, Double_t einc);
-
-
-    ClassDef(R3BCalifaCrystalCal2Hit,1);
-
+    ClassDef(R3BCalifaCrystalCal2Hit, 2);
 };
-
 
 #endif

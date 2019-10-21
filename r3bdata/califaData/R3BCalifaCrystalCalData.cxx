@@ -1,7 +1,3 @@
-// -------------------------------------------------------------------------
-// -----            R3BCalifaCrystalCalData source file                -----
-// -------------------------------------------------------------------------
-
 #include "R3BCalifaCrystalCalData.h"
 
 #include <iostream>
@@ -27,7 +23,7 @@ R3BCalifaCrystalCalData::R3BCalifaCrystalCalData()
 
 
 // -----   Standard constructor   ------------------------------------------
-R3BCalifaCrystalCalData::R3BCalifaCrystalCalData(Int_t ident, Double_t energy, Double_t Nf, Double_t Ns, ULong64_t time, Double_t tot_energy) 
+R3BCalifaCrystalCalData::R3BCalifaCrystalCalData(Int_t ident, Double_t energy, Double_t Nf, Double_t Ns, ULong64_t time, Double_t tot_energy)
   : FairMultiLinkedData(),
     fEnergy(energy),
     fNf(Nf),

@@ -16,7 +16,6 @@
 #include "FairLogger.h"
 
 #include "R3BCalifaCrystalCalData.h"
-#include "R3BCalifaCrystalCalDataSim.h"
 
 #include "TGeoManager.h"
 #include "TMath.h"
@@ -59,7 +58,7 @@ R3BCalifaEventDisplay::R3BCalifaEventDisplay() : FairTask("R3BCalifaEventDisplay
   viewerLeftTop(NULL),sceneLeftTop(NULL),viewerRightTop(NULL),sceneRightTop(NULL),
   viewerLeftBottom(NULL),sceneLeftBottom(NULL),viewerRightBottom(NULL),sceneRightBottom(NULL),
   legoSlot(NULL),legoScene(NULL),legoViewer(NULL),
-  fProjManager1(NULL),fProjManager2(NULL),kSimulation(false)
+  fProjManager1(NULL),fProjManager2(NULL)
 {
 }
 // -----------------------------------------------------------------------
@@ -76,7 +75,7 @@ R3BCalifaEventDisplay::R3BCalifaEventDisplay(const char* name, Int_t iVerbose) :
   viewerLeftTop(NULL),sceneLeftTop(NULL),viewerRightTop(NULL),sceneRightTop(NULL),
   viewerLeftBottom(NULL),sceneLeftBottom(NULL),viewerRightBottom(NULL),sceneRightBottom(NULL),
   legoSlot(NULL),legoScene(NULL),legoViewer(NULL),
-  fProjManager1(NULL),fProjManager2(NULL),kSimulation(false)
+  fProjManager1(NULL),fProjManager2(NULL)
 {
 }
 // -----------------------------------------------------------------------
@@ -91,13 +90,8 @@ InitStatus R3BCalifaEventDisplay::Init()
 
   FairRootManager* ioManager = FairRootManager::Instance();
   if ( !ioManager ) LOG(fatal) << "Init: No FairRootManager";
-  if( !ioManager->GetObject("CalifaCrystalCalDataSim") ) {
-     fCrystalHitCA = (TClonesArray*) ioManager->GetObject("CalifaCrystalCalData");
-  } else {
-     fCrystalHitCA = (TClonesArray*) ioManager->GetObject("CalifaCrystalCalDataSim");
-     kSimulation = true;
-  }
-
+  fCrystalHitCA = (TClonesArray*) ioManager->GetObject("CalifaCrystalCalData");
+ 
   fEventManager = FairEventManager::Instance();
 
   CreateHistograms();
@@ -133,7 +127,6 @@ void R3BCalifaEventDisplay::Exec(Option_t* opt)
 
     // Besides if conditions, both objects must be defined
     R3BCalifaCrystalCalData*    crystalHit;
-    R3BCalifaCrystalCalDataSim* crystalHitSim;
 
     Int_t crystalHits;        // Nb of CrystalHits in current event
     crystalHits = fCrystalHitCA->GetEntriesFast();
@@ -148,14 +141,9 @@ void R3BCalifaEventDisplay::Exec(Option_t* opt)
 
     // Loop in Crystal Hits
     for (Int_t i=0; i<crystalHits; i++) {
-
-      if(kSimulation) {
-        crystalHitSim = (R3BCalifaCrystalCalDataSim *) fCrystalHitCA->At(i);
-        GetAngles(fGeometryVersion,crystalHitSim->GetCrystalId(),&theta,&phi,&rho);
-      } else {
-        crystalHit  = (R3BCalifaCrystalCalData *) fCrystalHitCA->At(i);
-        GetAngles(fGeometryVersion,crystalHit->GetCrystalId(),&theta,&phi,&rho);
-      }
+      
+      crystalHit  = (R3BCalifaCrystalCalData *) fCrystalHitCA->At(i);
+      GetAngles(fGeometryVersion,crystalHit->GetCrystalId(),&theta,&phi,&rho);
 
       eta = -TMath::Log(TMath::Tan(theta*0.5f));
 
@@ -173,16 +161,9 @@ void R3BCalifaEventDisplay::Exec(Option_t* opt)
         }
       }
 
-
       // Filling histograms
-      if(kSimulation) {
-        if(hcalo->GetBinContent(binx,biny)==0) { hcalo->SetBinContent(binx,biny,crystalHitSim->GetEnergy()*1000);
-        } else { hcalo->SetBinContent(binx,biny,hcalo->GetBinContent(binx,biny)+crystalHitSim->GetEnergy()*1000);
-        }
-      } else {
-        if(hcalo->GetBinContent(binx,biny)==0) { hcalo->SetBinContent(binx,biny,crystalHit->GetEnergy()*1000);
-        } else { hcalo->SetBinContent(binx,biny,hcalo->GetBinContent(binx,biny)+crystalHit->GetEnergy()*1000);
-        }
+      if(hcalo->GetBinContent(binx,biny)==0) { hcalo->SetBinContent(binx,biny,crystalHit->GetEnergy()*1000);
+      } else { hcalo->SetBinContent(binx,biny,hcalo->GetBinContent(binx,biny)+crystalHit->GetEnergy()*1000);
       }
 
     }

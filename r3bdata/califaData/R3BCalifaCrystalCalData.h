@@ -5,7 +5,7 @@
 // -------------------------------------------------------------------------
 
 /**  R3BCalifaCrystalCalData.h
- **  A calorimeter crystalCalData hit is the representation of the 
+ **  A calorimeter crystalCalData hit is the representation of the
  **  information obtained from each crystal in the calorimeter.
  **/
 
@@ -15,7 +15,7 @@
 #include "TObject.h"
 #include "FairMultiLinkedData.h"
 
-class R3BCalifaCrystalCalData : public FairMultiLinkedData 
+class R3BCalifaCrystalCalData : public FairMultiLinkedData
 {
 public:
 
@@ -23,11 +23,13 @@ public:
   R3BCalifaCrystalCalData();
 
   /** Constructor with arguments
-   *@param fCrystalId   Crystal unique identifier
-   *@param fEnergy      Total energy deposited on the crystal ([GeV] in sim)
-   *@param fToT_Energy  Total energy deposited on the crystal from ToT ([GeV] in sim)
-   *@param fTime        Time since event start [ns]
-   **/
+    *@param fCrystalId   Crystal unique identifier
+    *@param fEnergy      Total energy deposited on the crystal ([GeV] in sim)
+    *@param fNf  				Total Nf (fast)
+    *@param fNs					Total Ns (slow)
+    *@param fTime        Time since event start [ns]
+    *@param fToT_Energy  Total energy deposited on the crystal from ToT ([GeV] in sim)
+    **/
   R3BCalifaCrystalCalData(Int_t ident, Double_t energy, Double_t Nf, Double_t Ns, ULong64_t time, Double_t tot_energy=0);
 
   /** Copy constructor **/
@@ -45,7 +47,7 @@ public:
   Double_t GetNf()            const { return fNf; }
   Double_t GetNs()            const { return fNs; }
   ULong64_t GetTime()         const { return fTime; }
-	
+
   Int_t    GetCrystalType()   const { return 0; }   //Backwards compatibility: not crashing macros
   Int_t    GetCrystalCopy()   const { return 0; }   //Backwards compatibility: not crashing macros
 
@@ -56,7 +58,9 @@ public:
   void SetNf(Double32_t Nf){fNf = Nf;}
   void SetNs(Double32_t Ns){fNs = Ns;}
   void SetTime(ULong64_t time){fTime = time;}
-
+  void AddMoreEnergy(Double32_t moreEnergy) { fEnergy += moreEnergy; }
+  void AddMoreNf(Double32_t moreNf)         { fNf += moreNf; }
+ 	void AddMoreNs(Double32_t moreNs) { fNs += moreNs; }
   /** Output to screen **/
   virtual void Print(const Option_t* opt) const;
 

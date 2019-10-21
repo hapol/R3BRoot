@@ -16,7 +16,6 @@
 #include "FairLogger.h"
 
 #include "R3BCalifaHitData.h"
-#include "R3BCalifaHitDataSim.h"
 
 #include "TEveManager.h"
 #include "TEveProjections.h"
@@ -53,7 +52,7 @@ slotLeftTop(NULL),slotLeftBottom(NULL),slotRightTop(NULL),slotRightBottom(NULL),
 viewerLeftTop(NULL),sceneLeftTop(NULL),viewerRightTop(NULL),sceneRightTop(NULL),
 viewerLeftBottom(NULL),sceneLeftBottom(NULL),viewerRightBottom(NULL),sceneRightBottom(NULL),
 legoSlot(NULL),legoScene(NULL),legoViewer(NULL),
-fProjManager1(NULL),fProjManager2(NULL),kSimulation(false)
+fProjManager1(NULL),fProjManager2(NULL)
 {
 }
 // -----------------------------------------------------------------------
@@ -69,7 +68,7 @@ slotLeftTop(NULL),slotLeftBottom(NULL),slotRightTop(NULL),slotRightBottom(NULL),
 viewerLeftTop(NULL),sceneLeftTop(NULL),viewerRightTop(NULL),sceneRightTop(NULL),
 viewerLeftBottom(NULL),sceneLeftBottom(NULL),viewerRightBottom(NULL),sceneRightBottom(NULL),
 legoSlot(NULL),legoScene(NULL),legoViewer(NULL),
-fProjManager1(NULL),fProjManager2(NULL),kSimulation(false)
+fProjManager1(NULL),fProjManager2(NULL)
 {
 }
 // -----------------------------------------------------------------------
@@ -84,12 +83,7 @@ InitStatus R3BCalifaHitEventDisplay::Init()
 
   FairRootManager* ioManager = FairRootManager::Instance();
   if ( !ioManager ) LOG(fatal) << "Init:No FairRootManager";
-  if( !ioManager->GetObject("CalifaHitDataSim") ) {
-     fCaloHitCA = (TClonesArray*) ioManager->GetObject("CalifaHitData");
-  } else {
-     fCaloHitCA = (TClonesArray*) ioManager->GetObject("CalifaHitDataSim");
-     kSimulation = true;
-  }
+  fCaloHitCA = (TClonesArray*) ioManager->GetObject("CalifaHitData");
 
   fEventManager = FairEventManager::Instance();
 
@@ -120,7 +114,6 @@ void R3BCalifaHitEventDisplay::Exec(Option_t* opt)
 
     // Besides if conditions, both objects must be defined
     R3BCalifaHitData*    caloHit;
-    R3BCalifaHitDataSim* caloHitSim;
 
     Int_t caloHits=0;        // Nb of CaloHits in current event
     caloHits = fCaloHitCA->GetEntriesFast();
@@ -135,16 +128,10 @@ void R3BCalifaHitEventDisplay::Exec(Option_t* opt)
 
     // Loop in Calo Hits
     for (Int_t i=0; i<caloHits; i++) {
-
-      if(kSimulation) {
-        caloHitSim = (R3BCalifaHitDataSim *) fCaloHitCA->At(i);
-        theta = caloHitSim->GetTheta();
-        phi   = caloHitSim->GetPhi();
-      } else {
-        caloHit  = (R3BCalifaHitData *) fCaloHitCA->At(i);
-        theta = caloHit->GetTheta();
-        phi   = caloHit->GetPhi();
-      }
+      caloHit  = (R3BCalifaHitData *) fCaloHitCA->At(i);
+      theta = caloHit->GetTheta();
+      phi   = caloHit->GetPhi();
+      
       eta = -TMath::Log(TMath::Tan(theta*0.5f));
 
       //Matching hit with histogram bin
@@ -163,15 +150,10 @@ void R3BCalifaHitEventDisplay::Exec(Option_t* opt)
 
 
       // Filling histograms
-      if(kSimulation) {
-        if(hcalohit->GetBinContent(binx,biny)==0) { hcalohit->SetBinContent(binx,biny,caloHitSim->GetEnergy()*1000);
-        } else { hcalohit->SetBinContent(binx,biny,hcalohit->GetBinContent(binx,biny)+caloHitSim->GetEnergy()*1000);
-        }
-      } else {
-        if(hcalohit->GetBinContent(binx,biny)==0) { hcalohit->SetBinContent(binx,biny,caloHit->GetEnergy()*1000);
-        } else { hcalohit->SetBinContent(binx,biny,hcalohit->GetBinContent(binx,biny)+caloHit->GetEnergy()*1000);
-        }
-      }
+
+      if(hcalohit->GetBinContent(binx,biny)==0) { hcalohit->SetBinContent(binx,biny,caloHit->GetEnergy()*1000);
+      } else { hcalohit->SetBinContent(binx,biny,hcalohit->GetBinContent(binx,biny)+caloHit->GetEnergy()*1000);
+      } 
 
     }
 
