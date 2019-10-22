@@ -37,9 +37,8 @@ class R3BCalifa : public R3BDetector
 
     /** Virtual method ProcessHits
      **
-     ** Defines the action to be taken when a step is inside the
-     ** active volume. Creates a R3BCalifaPoint or a
-     ** R3BCalifaCrystalCalData and adds it to the collection.
+     ** Defines the action to be taken when a step is inside the active
+     ** volume. Creates a R3BCalifaPoint and adds it to the collection.
      *@param vol  Pointer to the active volume
      **/
     virtual Bool_t ProcessHits(FairVolume* vol = 0);
@@ -53,7 +52,6 @@ class R3BCalifa : public R3BDetector
 
     /** Virtual method EndOfEvent
      **
-     ** Added support for R3BCalifaCrystalCalData
      ** If verbosity level is set, print hit collection at the
      ** end of the event and resets it afterwards.
      **/
@@ -154,17 +152,6 @@ class R3BCalifa : public R3BDetector
                              Double_t eLoss,
                              Double_t Nf,
                              Double_t Ns);
-
-    /** Private method AddCrystalCal
-     **
-     ** Adds a CalifaCrystalCalData to the HitCollection
-     **/
-    R3BCalifaCrystalCalData* AddCrystalHit(Int_t ident,
-                                           Double_t energy,
-                                           Double_t Nf,
-                                           Double_t Ns,
-                                           Double_t time,
-                                           Double_t tot_energy);
 
     /** Private method ResetParameters
      **
