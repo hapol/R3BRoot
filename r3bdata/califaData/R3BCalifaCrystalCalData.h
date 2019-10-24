@@ -1,9 +1,3 @@
-// -------------------------------------------------------------------------
-// -----              R3BCalifaCrystalCalData header file              -----
-// -----               Created 08/07/10  by H. Alvarez Pol             -----
-// -----	     Last modification 23/12/16 by P.Cabanelas         -----
-// -------------------------------------------------------------------------
-
 /**  R3BCalifaCrystalCalData.h
  **  A calorimeter crystalCalData hit is the representation of the
  **  information obtained from each crystal in the calorimeter.
@@ -47,9 +41,6 @@ public:
   Double_t GetNf()            const { return fNf; }
   Double_t GetNs()            const { return fNs; }
   ULong64_t GetTime()         const { return fTime; }
-
-  Int_t    GetCrystalType()   const { return 0; }   //Backwards compatibility: not crashing macros
-  Int_t    GetCrystalCopy()   const { return 0; }   //Backwards compatibility: not crashing macros
 
   /** Modifiers **/
   void SetCrystalId(Int_t ident)            { fCrystalId = ident; }

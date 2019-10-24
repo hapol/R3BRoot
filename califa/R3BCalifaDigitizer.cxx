@@ -90,6 +90,8 @@ void R3BCalifaDigitizer::Exec(Option_t* option)
 
     R3BCalifaPoint** pointData = NULL;
     pointData = new R3BCalifaPoint*[nHits];
+    for (Int_t i = 0; i < nHits; i++)
+        pointData[i] = (R3BCalifaPoint*)(fCalifaPointDataCA->At(i));
 
     Int_t crystalId;
     Double_t Nf;
@@ -99,8 +101,6 @@ void R3BCalifaDigitizer::Exec(Option_t* option)
 
     for (Int_t i = 0; i < nHits; i++)
     {
-        pointData[i] = (R3BCalifaPoint*)(fCalifaPointDataCA->At(i));
-
         crystalId = pointData[i]->GetCrystalId();
         Nf = pointData[i]->GetNf();
         Ns = pointData[i]->GetNs();
@@ -109,7 +109,6 @@ void R3BCalifaDigitizer::Exec(Option_t* option)
 
         Int_t nCrystalCals = fCalifaCryCalDataCA->GetEntriesFast();
         Bool_t existHit = 0;
-
         if (nCrystalCals == 0)
             AddCrystalCal(crystalId, NUSmearing(energy), Nf, Ns, time, 0);
         else
@@ -126,6 +125,7 @@ void R3BCalifaDigitizer::Exec(Option_t* option)
                         ((R3BCalifaCrystalCalData*)(fCalifaCryCalDataCA->At(j)))->SetTime(time);
                     }
                     existHit = 1; // to avoid the creation of a new CrystalHit
+
                     break;
                 }
             }
@@ -168,8 +168,8 @@ void R3BCalifaDigitizer::Exec(Option_t* option)
 void R3BCalifaDigitizer::EndOfEvent()
 {
 
-    fCalifaPointDataCA->Clear();
-    fCalifaCryCalDataCA->Clear();
+    // fCalifaPointDataCA->Clear();
+    // fCalifaCryCalDataCA->Clear();
     ResetParameters();
 }
 
@@ -270,7 +270,8 @@ Double_t R3BCalifaDigitizer::CompSmearing(Double_t inputComponent)
         return inputComponent;
     else
     {
-        Double_t randomIs = gRandom->Gaus(0, fComponentRes);
-        return inputComponent + randomIs;
+        Double_t randomIs =
+            gRandom->Gaus(0, inputComponent * fComponentRes * 1000 / (235 * sqrt(inputComponent * 1000)));
+        return inputComponent + randomIs / 1000;
     }
 }

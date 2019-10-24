@@ -180,49 +180,23 @@ Bool_t R3BCalifa::ProcessHits(FairVolume* vol)
         fVolumeID = vol->getMCid();
         fTrackPID = gMC->TrackPid();
         fUniqueID = gMC->GetStack()->GetCurrentTrack()->GetUniqueID();
-
-        gMC->TrackPosition(fPosOut);
-        gMC->TrackMomentum(fMomOut);
+        // updating the value of the track length when exiting or stopping
+        fLength = gMC->TrackLength();
 
         if (fELoss == 0.)
             return kFALSE;
-
-        // Adding a point support
-        const Double_t* oldpos;
-        const Double_t* olddirection;
-        Double_t newpos[3];
-        Double_t newdirection[3];
-        Double_t safety;
-        gGeoManager->FindNode(fPosOut.X(), fPosOut.Y(), fPosOut.Z());
-        oldpos = gGeoManager->GetCurrentPoint();
-        olddirection = gGeoManager->GetCurrentDirection();
-
-        for (Int_t i = 0; i < 3; i++)
-            newdirection[i] = -1 * olddirection[i];
-
-        gGeoManager->SetCurrentDirection(newdirection);
-        safety = gGeoManager->GetSafeDistance();
-        gGeoManager->SetCurrentDirection(-newdirection[0], -newdirection[1], -newdirection[2]);
-
-        for (Int_t i = 0; i < 3; i++)
-            newpos[i] = oldpos[i] - (3 * safety * olddirection[i]);
-
-        fPosOut.SetX(newpos[0]);
-        fPosOut.SetY(newpos[1]);
-        fPosOut.SetZ(newpos[2]);
 
         AddPoint(fTrackID,
                  fVolumeID,
                  crystalId,
                  TVector3(fPosIn.X(), fPosIn.Y(), fPosIn.Z()),
-                 TVector3(fPosOut.X(), fPosOut.Y(), fPosOut.Z()),
                  TVector3(fMomIn.Px(), fMomIn.Py(), fMomIn.Pz()),
-                 TVector3(fMomOut.Px(), fMomOut.Py(), fMomOut.Pz()),
                  fTime,
                  fLength,
                  fELoss,
                  fNf,
-                 fNs);
+                 fNs,
+                 gMC->CurrentEvent());
 
         // Increment number of CalifaPoints for this track
         R3BStack* stack = (R3BStack*)gMC->GetStack();
@@ -238,9 +212,7 @@ void R3BCalifa::EndOfEvent()
 {
     // if (fVerboseLevel > 1)
     Print();
-
     fCalifaCollection->Clear();
-
     ResetParameters();
 }
 
@@ -292,22 +264,20 @@ R3BCalifaPoint* R3BCalifa::AddPoint(Int_t trackID,
                                     Int_t detID,
                                     Int_t ident,
                                     TVector3 posIn,
-                                    TVector3 posOut,
                                     TVector3 momIn,
-                                    TVector3 momOut,
                                     Double_t time,
                                     Double_t length,
                                     Double_t eLoss,
                                     Double_t Nf,
-                                    Double_t Ns)
+                                    Double_t Ns,
+                                    UInt_t EventId)
 {
     TClonesArray& clref = *fCalifaCollection;
     Int_t size = clref.GetEntriesFast();
     if (fVerboseLevel > 1)
         LOG(INFO) << "R3BCalifa: Adding Point at (" << posIn.X() << ", " << posIn.Y() << ", " << posIn.Z()
                   << ") cm,  detector " << detID << ", track " << trackID << ", energy loss " << eLoss * 1e06 << " keV";
-    return new (clref[size])
-        R3BCalifaPoint(trackID, detID, ident, posIn, posOut, momIn, momOut, time, length, eLoss, Nf, Ns);
+    return new (clref[size]) R3BCalifaPoint(trackID, detID, ident, posIn, momIn, time, length, eLoss, Nf, Ns, EventId);
 }
 
 void R3BCalifa::SelectGeometryVersion(Int_t version) { fGeometryVersion = version; }

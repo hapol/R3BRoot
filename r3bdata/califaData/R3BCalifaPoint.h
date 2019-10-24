@@ -30,10 +30,15 @@ class R3BCalifaPoint : public FairMCPoint
    *@param eLoss    Energy deposit [GeV]
    *@param Nf       Fast component of CsI(Tl) light [a.u.]
    *@param Ns       Slow component of CsI(Tl) light [a.u.]
+   *@param EventId  Event Identifier
    **/
-  R3BCalifaPoint(Int_t trackID, Int_t detID, Int_t ident,
+   R3BCalifaPoint(Int_t trackID, Int_t detID, Int_t ident,
+ 	       TVector3 posIn, TVector3 momIn,
+ 	       Double_t tof, Double_t length, Double_t eLoss,
+         Double_t Nf, Double_t Ns, UInt_t EventId);
+  /*R3BCalifaPoint(Int_t trackID, Int_t detID, Int_t ident,
 	       TVector3 posIn,TVector3 posOut, TVector3 momIn, TVector3 momOut,
-	       Double_t tof, Double_t length, Double_t eLoss, Double_t Nf, Double_t Ns);
+	       Double_t tof, Double_t length, Double_t eLoss, Double_t Nf, Double_t Ns);*/
 
   /** Copy constructor **/
   R3BCalifaPoint(const R3BCalifaPoint&);
@@ -48,42 +53,42 @@ class R3BCalifaPoint : public FairMCPoint
   Double_t GetXIn()   const { return fX; }
   Double_t GetYIn()   const { return fY; }
   Double_t GetZIn()   const { return fZ; }
-  Double_t GetXOut()  const { return fX_out; }
+  /*Double_t GetXOut()  const { return fX_out; }
   Double_t GetYOut()  const { return fY_out; }
   Double_t GetZOut()  const { return fZ_out; }
   Double_t GetPxOut() const { return fPx_out; }
   Double_t GetPyOut() const { return fPy_out; }
-  Double_t GetPzOut() const { return fPz_out; }
+  Double_t GetPzOut() const { return fPz_out; }*/
   Double_t GetNf()   const { return fNf; }
 	Double_t GetNs()   const { return fNs; }
   void PositionIn(TVector3& pos)  { pos.SetXYZ(fX, fY, fZ); }
-  void PositionOut(TVector3& pos) { pos.SetXYZ(fX_out,fY_out,fZ_out); }
-  void MomentumOut(TVector3& mom) { mom.SetXYZ(fPx_out,fPy_out,fPz_out); }
+  /*void PositionOut(TVector3& pos) { pos.SetXYZ(fX_out,fY_out,fZ_out); }
+  void MomentumOut(TVector3& mom) { mom.SetXYZ(fPx_out,fPy_out,fPz_out); }*/
 
   /** Point coordinates at given z from linear extrapolation **/
-  Double_t GetX(Double_t z) const;
-  Double_t GetY(Double_t z) const;
+  //Double_t GetX(Double_t z) const;
+  //Double_t GetY(Double_t z) const;
 
   /** Check for distance between in and out **/
-  Bool_t IsUsable() const;
+  //Bool_t IsUsable() const;
 
   /** Modifiers **/
-  void SetPositionOut(TVector3 pos);
-  void SetMomentumOut(TVector3 mom);
+  //void SetPositionOut(TVector3 pos);
+  //void SetMomentumOut(TVector3 mom);
 
   /** Output to screen **/
   virtual void Print(const Option_t* opt) const;
 
  protected:
 
-  Double32_t fX_out,  fY_out,  fZ_out;  ///< Position of hit (outgoing) [cm]
-  Double32_t fPx_out, fPy_out, fPz_out; ///< Momentum components (outgoing)[GeV]
+  //Double32_t fX_out,  fY_out,  fZ_out;  ///< Position of hit (outgoing) [cm]
+  //Double32_t fPx_out, fPy_out, fPz_out; ///< Momentum components (outgoing)[GeV]
   Int_t fCrystalId;                     ///< crystal index
   Double32_t fNf, fNs;                  ///< nf, ns components
 
   ClassDef(R3BCalifaPoint,2)
 };
-
+/*
 inline void R3BCalifaPoint::SetPositionOut(TVector3 pos) {
   fX_out = pos.X();
   fY_out = pos.Y();
@@ -95,5 +100,5 @@ inline void R3BCalifaPoint::SetMomentumOut(TVector3 mom) {
   fPy_out = mom.Py();
   fPz_out = mom.Pz();
 }
-
+*/
 #endif

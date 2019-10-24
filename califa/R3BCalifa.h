@@ -101,24 +101,24 @@ class R3BCalifa : public R3BDetector
   private:
     /** Track information to be stored until the track leaves the
     active volume. **/
-    Int_t fTrackID;                 //!  track index
-    Int_t fTrackPID;                //!  particle identification
-    Int_t fVolumeID;                //!  volume id
-    Int_t fParentTrackID;           //!  parent track index
-    Int_t fUniqueID;                //!  particle unique id (e.g. if Delta electron, fUniqueID=9)
-    TLorentzVector fPosIn, fPosOut; //!  position
-    TLorentzVector fMomIn, fMomOut; //!  momentum
-    Double32_t fTime;               //!  time
-    Double32_t fLength;             //!  length
-    Double32_t fELoss;              //!  energy loss
-    Double32_t fNf;                 //!  fast CsI(Tl) amplitude
-    Double32_t fNs;                 //!  slow CsI(Tl) amplitude
-    Int_t fPosIndex;                //!
-    Int_t fNSteps;                  //!  Number of steps in the active volume
-    Double32_t fEinc;               //!  Total incident energy
-    TList* flGeoPar;                //!
+    Int_t fTrackID;        //!  track index
+    Int_t fTrackPID;       //!  particle identification
+    Int_t fVolumeID;       //!  volume id
+    Int_t fParentTrackID;  //!  parent track index
+    Int_t fUniqueID;       //!  particle unique id (e.g. if Delta electron, fUniqueID=9)
+    TLorentzVector fPosIn; //!  position
+    TLorentzVector fMomIn; //!  momentum
+    Double32_t fTime;      //!  time
+    Double32_t fLength;    //!  length
+    Double32_t fELoss;     //!  energy loss
+    Double32_t fNf;        //!  fast CsI(Tl) amplitude
+    Double32_t fNs;        //!  slow CsI(Tl) amplitude
+    Int_t fPosIndex;       //!
+    Int_t fNSteps;         //!  Number of steps in the active volume
+    Double32_t fEinc;      //!  Total incident energy
+    TList* flGeoPar;       //!
 
-    TClonesArray* fCalifaCollection;           //!  The point collection
+    TClonesArray* fCalifaCollection; //!  The point collection
 
     //! Defining functions for energy to light output calculation
     //    TF1 *tf_p_dNs;    //!
@@ -144,14 +144,15 @@ class R3BCalifa : public R3BDetector
                              Int_t detID,
                              Int_t ident,
                              TVector3 posIn,
-                             TVector3 pos_out,
+                             // TVector3 pos_out,
                              TVector3 momIn,
-                             TVector3 momOut,
+                             // TVector3 momOut,
                              Double_t time,
                              Double_t length,
                              Double_t eLoss,
                              Double_t Nf,
-                             Double_t Ns);
+                             Double_t Ns,
+                             UInt_t EventId);
 
     /** Private method ResetParameters
      **
@@ -168,9 +169,9 @@ inline void R3BCalifa::ResetParameters()
 {
     fTrackID = fVolumeID = fParentTrackID = fTrackPID = fUniqueID = 0;
     fPosIn.SetXYZM(0.0, 0.0, 0.0, 0.0);
-    fPosOut.SetXYZM(0.0, 0.0, 0.0, 0.0);
+    // fPosOut.SetXYZM(0.0, 0.0, 0.0, 0.0);
     fMomIn.SetXYZM(0.0, 0.0, 0.0, 0.0);
-    fMomOut.SetXYZM(0.0, 0.0, 0.0, 0.0);
+    // fMomOut.SetXYZM(0.0, 0.0, 0.0, 0.0);
     fTime = fLength = fELoss = fNf = fNs = fEinc = 0;
     fPosIndex = 0;
     fNSteps = 0;
