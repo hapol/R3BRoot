@@ -1,11 +1,3 @@
-// -----------------------------------------------------------------------------
-// -----                                                                   -----
-// -----                       R3BCalifaHitPar                             -----
-// -----              Created 21/07/2014 by H. Alvarez-Pol                 -----
-// -----               Modified 19/12/2016 by P.Cabanelas                  -----
-// -----                                                                   -----
-// -----------------------------------------------------------------------------
-
 #ifndef R3BCALIFAHITPAR_H
 #define R3BCALIFAHITPAR_H
 
@@ -29,7 +21,7 @@ class R3BCalifaHitPar : public FairParGenericSet
     void Print(Option_t* option = "") const;
     /** Accessor functions **/
     const Double_t GetThreshold() { return fThreshold; }
-    const Double_t GetCrystalResolution() { return fCrystalResolution; }
+    const Double_t GetDRThreshold() { return fDRThreshold; }
     const Double_t GetDeltaPolar() { return fDeltaPolar; }
     const Double_t GetDeltaAzimuthal() { return fDeltaAzimuthal; }
     const Double_t GetDeltaAngleClust() { return fDeltaAngleClust; }
@@ -37,7 +29,7 @@ class R3BCalifaHitPar : public FairParGenericSet
     const Double_t GetParCluster1() { return fParCluster1; }
 
     void SetThreshold(Double_t value) { fThreshold = value; }
-    void SetCrystalResolution(Double_t value) { fCrystalResolution = value; }
+    void SetDRThreshold(Double_t value) { fDRThreshold = value; }
     void SetDeltaPolar(Double_t value) { fDeltaPolar = value; }
     void SetDeltaAzimuthal(Double_t value) { fDeltaAzimuthal = value; }
     void SetDeltaAngleClust(Double_t value) { fDeltaAngleClust = value; }
@@ -47,8 +39,8 @@ class R3BCalifaHitPar : public FairParGenericSet
   private:
     // Minimum energy requested in a crystal to be considered in a calorimeter Hit
     Double_t fThreshold;
-    // Experimental resolution @ 1 MeV
-    Double_t fCrystalResolution;
+    // Threshold for selecting gamma or proton branch in double reading channels
+    Double_t fDRThreshold;
     // Angular window (polar)
     Double_t fDeltaPolar;
     // Angular window (azimuthal)
@@ -60,7 +52,7 @@ class R3BCalifaHitPar : public FairParGenericSet
     // Clustering parameter 1
     Double_t fParCluster1;
 
-    ClassDef(R3BCalifaHitPar, 1); //
+    ClassDef(R3BCalifaHitPar, 2); //
 };
 
 #endif /* !R3BCALIFAHITPAR_H*/

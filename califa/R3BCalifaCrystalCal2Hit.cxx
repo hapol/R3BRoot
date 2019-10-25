@@ -28,7 +28,7 @@ R3BCalifaCrystalCal2Hit::R3BCalifaCrystalCal2Hit()
 {
     fGeometryVersion = 2020; // BARREL+iPhos
     fThreshold = 0.;         // no threshold
-    fDRThreshold = 15000;    // in keV, for real data
+    fDRThreshold = 15000;    // in keV, for real data (15000 = 15MeV)
     fDeltaPolar = 0.25;
     fDeltaAzimuthal = 0.25;
     fDeltaAngleClust = 0;
@@ -36,7 +36,6 @@ R3BCalifaCrystalCal2Hit::R3BCalifaCrystalCal2Hit()
     fParCluster1 = 0;
     nEvents = 0;
     fCalifaGeo = 0;
-    // fCalifaHitFinderPar=0;
 }
 
 R3BCalifaCrystalCal2Hit::~R3BCalifaCrystalCal2Hit()
@@ -47,21 +46,7 @@ R3BCalifaCrystalCal2Hit::~R3BCalifaCrystalCal2Hit()
     // do not delete fCalifaGeo. It's a pointer to a static instance
 }
 
-void R3BCalifaCrystalCal2Hit::SetParContainers()
-{
-    // // Get run and runtime database
-    // FairRunAna* run = FairRunAna::Instance();
-    // if (!run) LOG(fatal) << "R3BCalifaCrystalCal2Hit::SetParContainers: No analysis run";
-
-    // FairRuntimeDb* rtdb = run->GetRuntimeDb();
-    // if (!rtdb) LOG(fatal) << "R3BCalifaCrystalCal2Hit::SetParContainers: No runtime database";
-
-    // fCalifaHitFinderPar = (R3BCalifaCrystalCal2HitPar*)(rtdb->getContainer("R3BCalifaCrystalCal2HitPar"));
-    // if ( fVerbose && fCalifaHitFinderPar ) {
-    //   LOG(INFO) << "R3BCalifaCrystalCal2Hit::SetParContainers() ";
-    //   LOG(INFO) << "Container R3BCalifaCrystalCal2HitPar loaded ";
-    // }
-}
+void R3BCalifaCrystalCal2Hit::SetParContainers() {}
 
 InitStatus R3BCalifaCrystalCal2Hit::Init()
 {
@@ -315,8 +300,6 @@ void R3BCalifaCrystalCal2Hit::Exec(Option_t* opt)
             }
         }
     }
-
-    //  std::cout << "# " << n_clusters << "\n--------\n";
 
     if (crystalHit)
         delete[] crystalHit;

@@ -4,7 +4,6 @@
 #include "FairTask.h"
 #include "R3BCalifaGeometry.h"
 #include "R3BCalifaHitData.h"
-//#include "R3BCalifaCrystalCal2HitPar.h"
 
 class TClonesArray;
 
@@ -65,6 +64,7 @@ class R3BCalifaCrystalCal2Hit : public FairTask
      *@param thresholdEne  Double parameter used to set the threshold
      **/
     void SetDRThreshold(Double_t DRthresholdEne);
+
     /** Virtual method SetParContainers **/
     virtual void SetParContainers();
 
@@ -95,7 +95,7 @@ class R3BCalifaCrystalCal2Hit : public FairTask
     Double_t fDRThreshold;              // Threshold for selecting gamma or proton branch in double reading channels
 
     // Parameter class
-    // R3BCalifaCrystalCal2HitPar* fCalifaHitFinderPar;
+    // R3BCalifaHitPar* fCalifaHitPar;
 
     R3BCalifaGeometry* fCalifaGeo;
 

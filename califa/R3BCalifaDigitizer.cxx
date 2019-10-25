@@ -6,8 +6,6 @@
 #include "TArrayD.h"
 #include "TClonesArray.h"
 #include "TMath.h"
-#include "TRandom.h"
-#include "TVector3.h"
 #include <iostream>
 #include <stdlib.h>
 
@@ -53,8 +51,6 @@ R3BCalifaDigitizer::~R3BCalifaDigitizer()
         fCalifaCryCalDataCA->Delete();
         delete fCalifaCryCalDataCA;
     }
-
-    // Nota: delete TArrayF cryId[nHits], energyId[nHits], Sumaenergy[nHits];
 }
 
 InitStatus R3BCalifaDigitizer::Init()
@@ -167,7 +163,6 @@ void R3BCalifaDigitizer::Exec(Option_t* option)
 // -----   Public method EndOfEvent   -----------------------------------------
 void R3BCalifaDigitizer::EndOfEvent()
 {
-
     // fCalifaPointDataCA->Clear();
     // fCalifaCryCalDataCA->Clear();
     ResetParameters();
@@ -193,8 +188,7 @@ void R3BCalifaDigitizer::FinishEvent() {}
 void R3BCalifaDigitizer::SetDetectionThreshold(Double_t thresholdEne)
 {
     fThreshold = thresholdEne;
-
-    LOG(INFO) << "R3BCalifaDigitizer::SetDetectionThreshold to " << fThreshold << " keV.";
+    LOG(INFO) << "R3BCalifaDigitizer::SetDetectionThreshold to " << fThreshold << " GeV.";
 }
 
 R3BCalifaCrystalCalData* R3BCalifaDigitizer::AddCrystalCal(Int_t ident,
@@ -223,7 +217,7 @@ void R3BCalifaDigitizer::SetExpEnergyRes(Double_t crystalRes)
 void R3BCalifaDigitizer::SetComponentRes(Double_t componentRes)
 {
     fComponentRes = componentRes;
-    LOG(INFO) << "R3BCalifaDigitizer::SetComponentRes to " << fComponentRes << " MeV.";
+    LOG(INFO) << "R3BCalifaDigitizer::SetComponentRes to " << fComponentRes;
 }
 
 Double_t R3BCalifaDigitizer::NUSmearing(Double_t inputEnergy)

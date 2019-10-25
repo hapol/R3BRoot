@@ -6,8 +6,6 @@
 #include "R3BCalifaCrystalCalData.h"
 #include "R3BCalifaPoint.h"
 #include "TClonesArray.h"
-#include "TLorentzVector.h"
-#include "TRandom3.h"
 #include "string"
 
 class R3BCalifaDigitizer : public FairTask
@@ -57,7 +55,7 @@ class R3BCalifaDigitizer : public FairTask
     /** Public method SetDetectionThreshold
      **
      ** Defines the minimum energy requested in a crystal to be included as a CrystalCal
-     *@param thresholdEne  Double parameter used to set the threshold
+     *@param thresholdEne  Double parameter used to set the threshold (in GeV)
      **/
     void SetDetectionThreshold(Double_t thresholdEne);
 

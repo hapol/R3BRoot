@@ -1,11 +1,3 @@
-// ----------------------------------------------------------------------------
-// -----                                                                  -----
-// -----                         R3BCalifaHitPar                          -----
-// -----               Created 21/07/2014 by H. Alvarez-Pol               -----
-// -----                Modified 19/12/2016 by P.Cabanelas                -----
-// -----                                                                  -----
-// ----------------------------------------------------------------------------
-
 #include "R3BCalifaHitPar.h"
 #include "TMath.h"
 #include <iostream>
@@ -23,7 +15,7 @@ void R3BCalifaHitPar::putParams(FairParamList* list)
     if (!list)
         return;
     list->add("fThreshold", (Double_t)fThreshold);
-    list->add("fCrystalResolution", (Double_t)fCrystalResolution);
+    list->add("fDRThreshold", (Double_t)fDRThreshold);
     list->add("fDeltaPolar", (Double_t)fDeltaPolar);
     list->add("fDeltaAzimuthal", (Double_t)fDeltaAzimuthal);
     list->add("fDeltaAngleClust", (Double_t)fDeltaAngleClust);
@@ -40,7 +32,7 @@ Bool_t R3BCalifaHitPar::getParams(FairParamList* list)
 
     if (!list->fill("fThreshold", &fThreshold, 1))
         return kFALSE;
-    if (!list->fill("fCrystalResolution", &fCrystalResolution, 1))
+    if (!list->fill("fDRThreshold", &fDRThreshold, 1))
         return kFALSE;
     if (!list->fill("fDeltaPolar", &fDeltaPolar, 1))
         return kFALSE;
@@ -60,7 +52,7 @@ void R3BCalifaHitPar::Print(Option_t* option) const
 {
     std::cout << "-I- CALIFA HitFinder Parameters:" << std::endl;
     std::cout << "fThreshold " << fThreshold << std::endl;
-    std::cout << "fCrystalResolution " << fCrystalResolution << std::endl;
+    std::cout << "fDRThreshold " << fDRThreshold << std::endl;
     std::cout << "fDeltaPolar " << fDeltaPolar << std::endl;
     std::cout << "fDeltaAzimuthal " << fDeltaAzimuthal << std::endl;
     std::cout << "fDeltaAngleClust " << fDeltaAngleClust << std::endl;

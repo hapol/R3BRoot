@@ -1,27 +1,9 @@
-//*-- AUTHOR : Denis Bertini
-//*-- Created : 20/03/2009
-//*-- Modified: 16/12/2016, P.Cabanelas
-//*-- Modified: 11/12/2017, E.Galiana
-
-/////////////////////////////////////////////////////////////
-//
-//  R3BCalifaContFact
-//
-//  Factory for the parameter containers in libR3BCalifa
-//
-/////////////////////////////////////////////////////////////
-
 #include "R3BCalifaContFact.h"
 
-//#include "R3BCaloParRootFileIo.h"
-//#include "R3BCaloParAsciiFileIo.h"
-//#include "R3BCaloDigiPar.h"
-
-#include "FairRuntimeDb.h"
-//#include "CbmParTest.h"
 #include "FairLogger.h"
 #include "FairParAsciiFileIo.h"
 #include "FairParRootFileIo.h"
+#include "FairRuntimeDb.h"
 #include "R3BCalifaCrystalCalPar.h"
 
 #include "TClass.h"
@@ -74,27 +56,6 @@ FairParSet* R3BCalifaContFact::createContainer(FairContainer* c)
     }
     return p;
 }
-
-/*
-  const char* name=c->GetName();
-  cout << " -I container name " << name << endl;
-  FairParSet* p=0;
-  if (strcmp(name,"R3BCalifaDigiPar")==0) {
-  p=new R3BCalifaDigiPar(c->getConcatName().Data(),c->GetTitle(),c->getContext());
-  }
-  if (strcmp(name,"CbmGeoStsPar")==0) {
-  p=new CbmGeoStsPar(c->getConcatName().Data(),c->GetTitle(),c->getContext());
-  }
-  return p;
-
-  const char* name=c->GetName();
-  LOG(INFO) << "R3BLandContFact: Create container name: " << name;
-  FairParSet* p=0;
-  if (strcmp(name,"R3BLandDigiPar")==0) {
-  p=new R3BLandDigiPar(c->getConcatName().Data(),c->GetTitle(),c->getContext());
-  }
-  return p;
-*/
 
 void R3BCalifaContFact::activateParIo(FairParIo* io)
 {

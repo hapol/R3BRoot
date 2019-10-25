@@ -85,15 +85,12 @@ R3BCalifaGeometry::R3BCalifaGeometry(int version)
     if (!gGeoManager)
         gGeoManager = new TGeoManager();
     gGeoManager->SetTopVolume(v);
-
-    // fNavigator = new TGeoNavigator(gGeoManager);
 }
 
 R3BCalifaGeometry::~R3BCalifaGeometry() {}
 
 Bool_t R3BCalifaGeometry::GetAngles(Int_t iD, Double_t& polar, Double_t& azimuthal, Double_t& rho)
 {
-
     Double_t local[3] = { 0, 0, 0 };
     Double_t master[3];
     const char* nameVolume;
@@ -120,7 +117,6 @@ Bool_t R3BCalifaGeometry::GetAngles(Int_t iD, Double_t& polar, Double_t& azimuth
     }
 
     TVector3 masterV(master[0], master[1], master[2]);
-    // masterV.Print();
     polar = masterV.Theta();
     azimuthal = masterV.Phi();
     rho = masterV.Mag();

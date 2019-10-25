@@ -88,7 +88,8 @@ void R3BCalifa::Initialize()
 Bool_t R3BCalifa::ProcessHits(FairVolume* vol)
 {
     Int_t crystalId = fCalifaGeo->GetCrystalId(gMC->CurrentVolPath());
-    fCsIDensity = gGeoManager->GetCurrentVolume()->GetMaterial()->GetDensity(); // call only once???
+    if (!fCsIDensity) // fill it in the first crystal
+        fCsIDensity = gGeoManager->GetCurrentVolume()->GetMaterial()->GetDensity();
 
     if (gMC->IsTrackEntering())
     {

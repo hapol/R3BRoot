@@ -120,12 +120,6 @@ class R3BCalifa : public R3BDetector
 
     TClonesArray* fCalifaCollection; //!  The point collection
 
-    //! Defining functions for energy to light output calculation
-    //    TF1 *tf_p_dNs;    //!
-    //    TF1 *tf_p_dNf;    //!
-    //    TF1 *tf_g_dNs;    //!
-    //    TF1 *tf_g_dNf;    //!
-
     TF1* tf_dNf_dE; //!
     TF1* tf_dNs_dE; //!
 
@@ -144,9 +138,7 @@ class R3BCalifa : public R3BDetector
                              Int_t detID,
                              Int_t ident,
                              TVector3 posIn,
-                             // TVector3 pos_out,
                              TVector3 momIn,
-                             // TVector3 momOut,
                              Double_t time,
                              Double_t length,
                              Double_t eLoss,
@@ -169,9 +161,7 @@ inline void R3BCalifa::ResetParameters()
 {
     fTrackID = fVolumeID = fParentTrackID = fTrackPID = fUniqueID = 0;
     fPosIn.SetXYZM(0.0, 0.0, 0.0, 0.0);
-    // fPosOut.SetXYZM(0.0, 0.0, 0.0, 0.0);
     fMomIn.SetXYZM(0.0, 0.0, 0.0, 0.0);
-    // fMomOut.SetXYZM(0.0, 0.0, 0.0, 0.0);
     fTime = fLength = fELoss = fNf = fNs = fEinc = 0;
     fPosIndex = 0;
     fNSteps = 0;
