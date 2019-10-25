@@ -6,6 +6,8 @@
 #include "TArrayD.h"
 #include "TClonesArray.h"
 #include "TMath.h"
+#include "TRandom.h"
+#include "TVector3.h"
 #include <iostream>
 #include <stdlib.h>
 
