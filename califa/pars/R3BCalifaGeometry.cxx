@@ -74,10 +74,10 @@ R3BCalifaGeometry::R3BCalifaGeometry(Int_t version)
             fNumCrystals = 4864;
             break;
 
-        case 2021:
-            // s455 Experiment: Half Barrel + Full IPHOS
-            geoPath += "califa_2021_s455.geo.root";
-            fNumCrystals = 4864;
+        case 3000:
+            // Full BARREL+iPhos version+CEPA_USC (testing CsI CEPA USC)
+            geoPath += "califa_barrel_iphos_cepa_usc_csi.geo.root";
+            fNumCrystals = 5056; //4864 from BARREL+iPhos + 12*8*2 from CEPA_USC
             break;
 
         default:
@@ -131,9 +131,9 @@ const TVector3& R3BCalifaGeometry::GetAngles(Int_t iD)
 
     // SOLUTION FOR DOUBLE READING CHANNELS
     if (iD > fNumCrystals / 2 && iD <= fNumCrystals)
-        iD = iD - fNumCrystals / 2; // for double reading crystals (crystals from 1 to 2432)
-
-    if (iD >= 1 && iD <= 2432)
+        iD = iD - fNumCrystals / 2; // for double reading crystals
+                                    //(crystals from 1 to 2432 in 2020, for instance)
+    if (iD >= 1 && iD <= fNumCrystals/2) //valid for all situations... ???
     {
         nameVolume = GetCrystalVolumePath(iD);
 
@@ -175,41 +175,61 @@ const char* R3BCalifaGeometry::GetCrystalVolumePath(Int_t iD)
 
     // SOLUTION FOR DOUBLE READING CHANNELS
     if (iD > fNumCrystals / 2 && iD <= fNumCrystals)
-        iD = iD - fNumCrystals / 2; // for double reading crystals (crystals from 1 to 2432)
+        iD = iD - fNumCrystals / 2; // for double reading crystals
+                                    //(crystals from 1 to 2432 in 2020, for instance)
+    static char nameVolume[200];
 
-    static char nameVolume[400];
-
-    if (iD >= 1 && iD <= 2432)
+    if (iD >= 1 && iD <= fNumCrystals / 2)
     {
-        if (iD < 33)
+        if (iD < 33)  //The first 32 crystals in individual alveolus, first BARREL ring
         {                          // First ring in BARREL (single crystal per alveolus)
             alvType = 1;           // Alveolus type 1
             alveolusCopy = iD - 1; // copy from 0 to 31
             cryType = 1;           // Only one crystal type (1)
         }
-        else if (iD < 2337)
+        else if (iD < 2337) //Crystals from 2 ring in BARREL till the last 4-crystal alveoli in iPhos
         {                                                                // All 4-crystals alveoli in BARREL and iPhos
             alvType = (Int_t)((iD - 33) / 128) + 2;                      // Alveolus type (2, ..., 19)
             alveolusCopy = (Int_t)((iD - 33 - (alvType - 2) * 128) / 4); // copy from 0 to 31
             cryType = iD - 33 - (alvType - 2) * 128 - alveolusCopy * 4 + 1; // Four crystal types (1,2,3,4)
         }
-        else
+        else if (iD < 2433) //Crystals with 3-crystal alveoli in iPhos
         {                                                                     // 3-crystals alveoli in iPhos
             alvType = (Int_t)((iD - 2337) / 24) + 20;                         // Alveolus type (20, 21, 22, 23)
             alveolusCopy = (Int_t)((iD - 2337 - (alvType - 20) * 24) / 3);    // copy from 0 to 7
             cryType = iD - 2337 - (alvType - 20) * 24 - alveolusCopy * 3 + 1; // Three crystal types (1,2,3)
         }
+        else  //CEPA_USC, if present (iD from 2433 to 2528)
+        {                                                                    // 4-crystals alveoli in CEPA_USC
+            alvType = (Int_t)((iD - 2433) / 32) + 1;                         // Alveolus type (01, 02, 03)
+            alveolusCopy = (Int_t)((iD - 2433 - (alvType - 1) * 32) / 4);    // copy from 0 to 7
+            cryType = iD - 2433 - (alvType - 1) * 32 - alveolusCopy * 4 + 1; // Four crystal types (1,2,3,4)
+        }
         char name_Alv[23][3] = { "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12",
                                  "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23" };
-        sprintf(nameVolume,
-                "/cave_1/CalifaWorld_0/Alveolus_%s_%i/InnerAlv_%s_0/WrapCry_%s_%i_0/Crystal_%s_%i_0",
-                name_Alv[alvType - 1],
-                alveolusCopy,
-                name_Alv[alvType - 1],
-                name_Alv[alvType - 1],
-                cryType,
-                name_Alv[alvType - 1],
-                cryType);
+        if(iD < 2433)
+        {
+            sprintf(nameVolume,
+                    "/cave_1/CalifaWorld_0/Alveolus_%s_%i/InnerAlv_%s_0/WrapCry_%s_%i_0/Crystal_%s_%i_0",
+                    name_Alv[alvType - 1],
+                    alveolusCopy,
+                    name_Alv[alvType - 1],
+                    name_Alv[alvType - 1],
+                    cryType,
+                    name_Alv[alvType - 1],
+                    cryType);
+       }
+       else{
+         sprintf(nameVolume,
+                 "/cave_1/CalifaWorld_0/Alveolus_CUSC_%s_%i/InnerAlv_CUSC_%s_0/WrapCry_CUSC_%s_%i_0/Crystal_CUSC_%s_%i_0",
+                 name_Alv[alvType - 1],
+                 alveolusCopy,
+                 name_Alv[alvType - 1],
+                 name_Alv[alvType - 1],
+                 cryType,
+                 name_Alv[alvType - 1],
+                 cryType);
+       }
     }
     else
     {
@@ -299,7 +319,8 @@ int R3BCalifaGeometry::GetCrystalId(const char* volumePath)
    * instead of possible out of bounds access consequences (nasal demons etc).
    * Also, it hopefully works with the 2019/s444 geo file too, now.
    */
-    static auto restr = "Alveolus_([0-9]+)_([0-9]+).*Crystal_[^_]+_([0-9]+)_";
+
+    static auto restr = "(Alveolus|Alveolus_CUSC)_([0-9]+)_([0-9]+).*(Crystal|Crystal_CUSC)_[^_]+_([0-9]+)_";
     static auto re = boost::regex(restr, boost::regex::extended);
     boost::cmatch m;
     if (!boost::regex_search(volumePath, m, re))
@@ -312,9 +333,10 @@ int R3BCalifaGeometry::GetCrystalId(const char* volumePath)
     }
 
     Int_t crystalId;
-    Int_t alvType = std::stoi(m[1].str());      // converting to int the alveolus type
-    Int_t alveolusCopy = std::stoi(m[2].str()); // converting to int the alveolus copy
-    Int_t cryType = std::stoi(m[3].str());      // converting to int the crystal type
+    Bool_t isCUSC = m[1].str() == "Alveolus_CUSC"; //Adding CEPA USC
+    Int_t alvType = std::stoi(m[2].str());      // converting to int the alveolus type
+    Int_t alveolusCopy = std::stoi(m[3].str()); // converting to int the alveolus copy
+    Int_t cryType = std::stoi(m[5].str());      // converting to int the crystal type
 
     if (cryType < 1 || cryType > 4 || alvType < 1 || alvType > 23)
     { // cryType runs from 1 to 4 while alvType runs from 1 to 23
@@ -324,14 +346,21 @@ int R3BCalifaGeometry::GetCrystalId(const char* volumePath)
         return 0;
     }
 
-    if (alvType == 1)
-        crystalId = 1 + alveolusCopy; // first alveoli ring, one crystal per alveolus
-    else if (alvType < 20)
-        crystalId = 33 + (alvType - 2) * 128 + alveolusCopy * 4 + (cryType - 1); // four crystal per alveolus
+    if(isCUSC)
+    {
+      crystalId = 2433 + (alvType - 1) * 32 + alveolusCopy * 4 + (cryType - 1); // four crystal per alveolus
+    }
     else
-        crystalId = 2337 + (alvType - 20) * 24 + alveolusCopy * 3 + (cryType - 1); // three crystal per alveolus
+    {
+        if (alvType == 1)
+            crystalId = 1 + alveolusCopy; // first alveoli ring, one crystal per alveolus
+        else if (alvType < 20)
+            crystalId = 33 + (alvType - 2) * 128 + alveolusCopy * 4 + (cryType - 1); // four crystal per alveolus
+        else
+            crystalId = 2337 + (alvType - 20) * 24 + alveolusCopy * 3 + (cryType - 1); // three crystal per alveolus
+    }
 
-    if (crystalId < 1 || crystalId > 2432)
+    if (crystalId < 1 || crystalId > fNumCrystals/2)
     { // crystalId runs from 1 to 2432
         LOG(ERROR) << "R3BCalifaGeometry: Wrong crystal numbers (2)";
         LOG(INFO) << "---- crystalId: " << crystalId;
