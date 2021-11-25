@@ -102,17 +102,41 @@ class R3BCalifaJulichOnlineSpectra : public FairTask
 
   private:
     TClonesArray* fMappedItemsCalifa; // Array with mapped items.
-    // TClonesArray* fCalItems;    // Array with cal items.
-    // TClonesArray* fHitItems;    // Array with hit items.
+    TClonesArray* fCalItemsCalifa;    // Array with cal items.
+    TClonesArray* fHitItemsCalifa;    // Array with hit items.
     TClonesArray* fMappedItemsSi; // Array with mapped items.
+    TClonesArray* fCalItemsSi;    // Array with cal items.
+    TClonesArray* fHitItemsSi;    // Array with hit items.
 
     R3BEventHeader* header; // Event header.
     Int_t fTrigger;         // Trigger value.
     Int_t fNEvents;         // Event counter.
     Int_t fNbDet;           // Number of AMS detectors.
+    Int_t fNbCrystals;           // Number of AMS detectors.
 
     // Histograms for map data
     std::vector<TH2F*> fh2_EnergyVsStrip;
+    std::vector<TH2F*> fh2_EnergyCalVsStrip;
+    std::vector<TH2F*> fh2_PosX_PosY;
+    std::vector<TH1F*> fh1_EnergyCalifaCrystals;
+    std::vector<TH1F*> fh1_EnergyCalCalifaCrystals;
+    std::vector<TH1F*> fh1_EnergyHitCalifaCrystals;
+    std::vector<TH2F*> fh2_EnergyCorrelationsCrystals;
+    std::vector<TH2F*> fh2_Map_nf_ns;
+
+    TH2F *fh2_EnergyCorrelationsAlvProton;
+    TH1F *fh1_MultiplicityGamma;
+    TH1F *fh1_MultiplicityProton;
+    TH2F *fh2_EnergyCorrelationsAlvGamma;
+    TH1F *fh1_EnergyTotBoxA_g;
+    TH1F *fh1_EnergyTotBoxB_g;
+    TH1F *fh1_EnergyTotBoxA_p;
+    TH1F *fh1_EnergyTotBoxB_p;
+
+    TH2F *fh2_EnergyMapCalifa_SiStrip[4];
+    TH2F *fh2_EnergyTotMapCalifa_SiStrip;
+    TH2F *fh2_PosX_PosY_Califa[4];
+    TH2F *fh2_Energy_1A_1B;
 
   public:
     ClassDefOverride(R3BCalifaJulichOnlineSpectra, 0)
