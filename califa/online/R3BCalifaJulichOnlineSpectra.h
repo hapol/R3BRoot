@@ -112,7 +112,7 @@ class R3BCalifaJulichOnlineSpectra : public FairTask
     Int_t fTrigger;         // Trigger value.
     Int_t fNEvents;         // Event counter.
     Int_t fNbDet;           // Number of AMS detectors.
-    Int_t fNbCrystals;           // Number of AMS detectors.
+    Int_t fNbCrystals;      // Number of crystals.
 
     // Histograms for map data
     std::vector<TH2F*> fh2_EnergyVsStrip;
