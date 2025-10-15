@@ -16,6 +16,7 @@
 // -----    Created 27/02/25 by J.L. Rodriguez-Sanchez    -----
 // -----    Modified 15/09/25 by Pablo González Rusell    -----
 // -----          Fill Actaf online histograms            -----
+// -----   Adding a test comment for our GitHub exercise -----
 // ------------------------------------------------------------
 
 // ROOT headers
